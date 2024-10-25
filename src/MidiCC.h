@@ -33,8 +33,8 @@
 
 #define CCeg1_attack 89
 #define CCeg1_decay 90
-#define CCeg1_release 91
-#define CCeg1_sustain 92
+#define CCeg1_sustain 91
+#define CCeg1_release 92
 #define CCeg1_key_follow 93
 #define CCeg_select 94
 
@@ -53,8 +53,8 @@
 
 #define CCeg2_attack 105
 #define CCeg2_decay 106
-#define CCeg2_release 107
-#define CCeg2_sustain 108
+#define CCeg2_sustain 107
+#define CCeg2_release 108
 #define CCeg2_key_follow 109
 
 

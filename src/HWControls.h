@@ -56,12 +56,12 @@ ADC *adc = new ADC();
 
 #define MUX4_eg1_attack 0
 #define MUX4_eg1_decay 1
-#define MUX4_eg1_release 2
-#define MUX4_eg1_sustain 3
+#define MUX4_eg1_sustain 2
+#define MUX4_eg1_release 3
 #define MUX4_eg2_attack 4
 #define MUX4_eg2_decay 5
-#define MUX4_eg2_release 6
-#define MUX4_eg2_sustain 7
+#define MUX4_eg2_sustain 6
+#define MUX4_eg2_release 7
 
 //Mux 5 Connections
 

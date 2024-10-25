@@ -1726,8 +1726,8 @@ void setCurrentPatchData(String data[]) {
   lfo_select = data[24].toInt();
   eg1_attack = data[25].toInt();
   eg1_decay = data[26].toInt();
-  eg1_release = data[27].toInt();
-  eg1_sustain = data[28].toInt();
+  eg1_sustain = data[27].toInt();
+  eg1_release = data[28].toInt();
   eg1_key_follow = data[29].toInt();
   eg_select = data[30].toInt();
   vca_key_velocity = data[31].toInt();
@@ -1742,8 +1742,8 @@ void setCurrentPatchData(String data[]) {
   lfo3_wave = data[40].toInt();
   eg2_attack = data[41].toInt();
   eg2_decay = data[42].toInt();
-  eg2_release = data[43].toInt();
-  eg2_sustain = data[44].toInt();
+  eg2_sustain = data[43].toInt();
+  eg2_release = data[44].toInt();
   eg2_key_follow = data[45].toInt();
 
   updateosc1_sub();
@@ -1866,11 +1866,11 @@ String getCurrentPatchData() {
          + "," + String(osc2_freq) + "," + String(osc2_detune) + "," + String(osc2_wave) + "," + String(osc2_xmod) + "," + String(osc2_eg_depth) + "," + String(osc2_eg_select) + "," + String(osc2_level)
          + "," + String(vcf_cutoff) + "," + String(vcf_res) + "," + String(vcf_eg_depth) + "," + String(vcf_key_follow) + "," + String(vcf_key_velocity) + "," + String(vcf_hpf)
          + "," + String(lfo1_depth) + "," + String(lfo1_speed) + "," + String(lfo1_delay) + "," + String(lfo1_wave) + "," + String(lfo_select)
-         + "," + String(eg1_attack) + "," + String(eg1_decay) + "," + String(eg1_release) + "," + String(eg1_sustain) + "," + String(eg1_key_follow) + "," + String(eg_select)
+         + "," + String(eg1_attack) + "," + String(eg1_decay) + "," + String(eg1_sustain) + "," + String(eg1_release) + "," + String(eg1_key_follow) + "," + String(eg_select)
          + "," + String(vca_key_velocity) + "," + String(vca_level)
          + "," + String(lfo2_depth) + "," + String(lfo2_speed) + "," + String(lfo2_delay) + "," + String(lfo2_wave)
          + "," + String(lfo3_depth) + "," + String(lfo3_speed) + "," + String(lfo3_delay) + "," + String(lfo3_wave)
-         + "," + String(eg2_attack) + "," + String(eg2_decay) + "," + String(eg2_release) + "," + String(eg2_sustain) + "," + String(eg2_key_follow);
+         + "," + String(eg2_attack) + "," + String(eg2_decay) + "," + String(eg2_sustain) + "," + String(eg2_release) + "," + String(eg2_key_follow);
 }
 
 void checkMux() {
@@ -1987,11 +1987,11 @@ void checkMux() {
       case MUX4_eg1_decay:
         myControlChange(midiChannel, CCeg1_decay, mux4Read);
         break;
-      case MUX4_eg1_release:
-        myControlChange(midiChannel, CCeg1_release, mux4Read);
-        break;
       case MUX4_eg1_sustain:
         myControlChange(midiChannel, CCeg1_sustain, mux4Read);
+        break;
+      case MUX4_eg1_release:
+        myControlChange(midiChannel, CCeg1_release, mux4Read);
         break;
       case MUX4_eg2_attack:
         myControlChange(midiChannel, CCeg2_attack, mux4Read);
@@ -1999,11 +1999,11 @@ void checkMux() {
       case MUX4_eg2_decay:
         myControlChange(midiChannel, CCeg2_decay, mux4Read);
         break;
-      case MUX4_eg2_release:
-        myControlChange(midiChannel, CCeg2_release, mux4Read);
-        break;
       case MUX4_eg2_sustain:
         myControlChange(midiChannel, CCeg2_sustain, mux4Read);
+        break;
+      case MUX4_eg2_release:
+        myControlChange(midiChannel, CCeg2_release, mux4Read);
         break;
     }
   }

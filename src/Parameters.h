@@ -61,8 +61,8 @@ int lfo_select = 0;
 
 int eg1_attack = 0;
 int eg1_decay = 0;
-int eg1_release = 0;
 int eg1_sustain = 0;
+int eg1_release = 0;
 int eg1_key_follow = 0;
 int eg_select = 0;
 
@@ -81,8 +81,8 @@ int lfo3_wave = 0;
 
 int eg2_attack = 0;
 int eg2_decay = 0;
-int eg2_release = 0;
 int eg2_sustain = 0;
+int eg2_release = 0;
 int eg2_key_follow = 0;
 
 int returnvalue = 0;
