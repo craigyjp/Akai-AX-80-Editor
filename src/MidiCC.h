@@ -58,41 +58,4 @@
 #define CCeg2_key_follow 109
 
 
-#define CCnoise 18
-
-#define CCchorus 4
-#define CCosc2_interval 5
-
-#define CCvcf_kbdtrack 21
-#define CCvcf_polarity 22
-
-#define CCvcf_attack 25
-#define CCvcf_decay 26
-#define CCvcf_breakpoint 27
-#define CCvcf_slope 28
-#define CCvcf_sustain 29
-#define CCvcf_release 30
-
-#define CCvca_attack 31
-#define CCvca_decay 32
-#define CCvca_breakpoint 33
-#define CCvca_slope 34
-#define CCvca_sustain 35
-#define CCvca_release 36
-
-#define CCmg_frequency 37
-#define CCmg_delay 38
-#define CCmg_osc 39
-#define CCmg_vcf 40
-
-#define CCbend_osc 41
-#define CCbend_vcf 42
-#define CCglide_time 43
-
-#define CCwave_bank 44
-
-#define CCpoly1 47
-#define CCpoly2 48
-#define CCunison 49
-
 #define CCallnotesoff 123//Panic button

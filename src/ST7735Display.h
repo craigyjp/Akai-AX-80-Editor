@@ -26,7 +26,7 @@
 
 ST7735_t3 tft = ST7735_t3(cs, dc, 11, 13, rst);
 
-String presets[64] = { "11", "12", "13", "14", "15", "16", "17", "18", "21", "22", "23", "24", "25", "26", "27", "28", "31", "32", "33", "34", "35", "36", "37", "38", "41", "42", "43", "44", "45", "46", "47", "48", "51", "52", "53", "54", "55", "56", "57", "58", "61", "62", "63", "64", "65", "66", "67", "68", "71", "72", "73", "74", "75", "76", "77", "78", "81", "82", "83", "84", "85", "86", "87", "88" };
+String presets[32] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32" };
 
 String currentParameter = "";
 String currentValue = "";
@@ -38,9 +38,6 @@ const char *currentSettingsOption = "";
 const char *currentSettingsValue = "";
 int currentSettingsPart = SETTINGS;
 int paramType = PARAMETER;
-
-boolean voiceOn[NO_OF_VOICES] = { false };
-boolean MIDIClkSignal = false;
 
 unsigned long timer = 0;
 
@@ -82,7 +79,7 @@ void renderCurrentPatchPage() {
   tft.println(currentPgmNum);
   int Patchnumber = currentPgmNum.toInt();
   if (!updateParams) {
-    if (Patchnumber <= 64) {
+    if (Patchnumber <= 32) {
       tft.setFont(&FreeSans12pt7b);
       tft.setCursor(65, 53);
       tft.println("P:");
@@ -90,6 +87,24 @@ void renderCurrentPatchPage() {
       tft.setTextColor(ST7735_RED);
       tft.setTextSize(1);
       tft.println(presets[Patchnumber - 1]);
+    }
+    if (Patchnumber > 32 && Patchnumber <= 64 ) {
+      tft.setFont(&FreeSans12pt7b);
+      tft.setCursor(65, 53);
+      tft.println("A:");
+      tft.setCursor(90, 53);
+      tft.setTextColor(ST7735_RED);
+      tft.setTextSize(1);
+      tft.println(presets[Patchnumber - 33]);
+    }
+    if (Patchnumber > 64 && Patchnumber <= 96 ) {
+      tft.setFont(&FreeSans12pt7b);
+      tft.setCursor(65, 53);
+      tft.println("B:");
+      tft.setCursor(90, 53);
+      tft.setTextColor(ST7735_RED);
+      tft.setTextSize(1);
+      tft.println(presets[Patchnumber - 65]);
     }
   }
   tft.setTextColor(ST7735_BLACK);

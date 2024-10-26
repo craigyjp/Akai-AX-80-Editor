@@ -72,6 +72,15 @@ void settingsLoadFactory(int index, const char *value) {
   storeLoadFactory(loadFactory);
 }
 
+void settingsLoadRAM(int index, const char *value) {
+  if (strcmp(value, "Yes") == 0) {
+    loadRAM = true;
+  } else {
+    loadRAM =  false;
+  }
+  storeLoadRAM(loadRAM);
+}
+
 void settingsSaveCurrent(int index, const char *value) {
   if (strcmp(value, "Yes") == 0) {
     saveCurrent = true;
@@ -114,6 +123,10 @@ int currentIndexLoadFactory() {
   return getLoadFactory();
 }
 
+int currentIndexLoadRAM() {
+  return getLoadRAM();
+}
+
 int currentIndexSaveCurrent() {
   return getSaveCurrent();
 }
@@ -129,7 +142,8 @@ void setUpSettings() {
   settings::append(settings::SettingsOption{"Encoder", {"Type 1", "Type 2", "\0"}, settingsEncoderDir, currentIndexEncoderDir});
   settings::append(settings::SettingsOption{"MIDI Params", {"Off", "Send Params", "\0"}, settingsUpdateParams, currentIndexUpdateParams});
   settings::append(settings::SettingsOption{"Load From DW", {"No", "Yes", "\0"}, settingsLoadFromDW, currentIndexLoadFromDW});
-  settings::append(settings::SettingsOption{"Load factory", {"No", "Yes", "\0"}, settingsLoadFactory, currentIndexLoadFactory});
+  settings::append(settings::SettingsOption{"Load Factory", {"No", "Yes", "\0"}, settingsLoadFactory, currentIndexLoadFactory});
+  settings::append(settings::SettingsOption{"Load RAM", {"No", "Yes", "\0"}, settingsLoadRAM, currentIndexLoadRAM});
   settings::append(settings::SettingsOption{"Save Current", {"No", "Yes", "\0"}, settingsSaveCurrent, currentIndexSaveCurrent});
   settings::append(settings::SettingsOption{"Save All", {"No", "Yes", "\0"}, settingsSaveAll, currentIndexSaveAll});
 }

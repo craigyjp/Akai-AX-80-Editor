@@ -9,6 +9,7 @@
 #define EEPROM_SAVE_CURRENT 6
 #define EEPROM_SAVE_ALL 7
 #define EEPROM_LOAD_FROM_DW 8
+#define EEPROM_LOAD_RAM 9
 
 int getMIDIChannel() {
   byte midiChannel = EEPROM.read(EEPROM_MIDI_CH);
@@ -84,6 +85,17 @@ boolean getLoadFactory() {
 void storeLoadFactory(byte lfupdate)
 {
   EEPROM.update(EEPROM_LOAD_FACTORY, lfupdate);
+}
+
+boolean getLoadRAM() {
+  byte lr = EEPROM.read(EEPROM_LOAD_RAM); 
+  if (lr < 0 || lr > 1)return true;
+  return lr ? true : false;
+}
+
+void storeLoadRAM(byte lrupdate)
+{
+  EEPROM.update(EEPROM_LOAD_RAM, lrupdate);
 }
 
 boolean getSaveCurrent() {
