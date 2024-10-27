@@ -9,12 +9,14 @@ char buffer[10];
 
 int MIDIThru = midi::Thru::Off;  //(EEPROM)
 String patchName = INITPATCHNAME;
+String currentRow;
 String bankdir = "/Bank";
 boolean encCW = true;  //This is to set the encoder to increment when turned CW - Settings Option
 boolean recallPatchFlag = true;
 boolean loadFactory = false;
 boolean loadRAM = false;
 boolean loadFromDW = false;
+boolean ROMType = false;
 boolean dataInProgress = false;
 int currentSendPatch = 0;
 boolean saveCurrent = false;

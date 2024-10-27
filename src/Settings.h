@@ -4,8 +4,9 @@ void settingsMIDICh();
 void settingsMIDIOutCh();
 void settingsEncoderDir();
 void settingsUpdateParams();
-void settingsLoadFromDW();
+void settingsROMType();
 void settingsLoadFactory();
+void settingsLoadRAM();
 void settingsSaveCurrent();
 void settingsSaveAll();
 
@@ -13,8 +14,9 @@ int currentIndexMIDICh();
 int currentIndexMIDIOutCh();
 int currentIndexEncoderDir();
 int currentIndexUpdateParams();
-int currentIndexLoadFromDW();
+int currentIndexROMType();
 int currentIndexLoadFactory();
+int currentIndexLoadRAM();
 int currentIndexSaveCurrent();
 int currentIndexSaveAll();
 
@@ -54,15 +56,6 @@ void settingsUpdateParams(int index, const char *value) {
   storeUpdateParams(updateParams ? 1 : 0);
 }
 
-void settingsLoadFromDW(int index, const char *value) {
-  if (strcmp(value, "Yes") == 0) {
-    loadFromDW = true;
-  } else {
-    loadFromDW =  false;
-  }
-  storeLoadFromDW(loadFromDW);
-}
-
 void settingsLoadFactory(int index, const char *value) {
   if (strcmp(value, "Yes") == 0) {
     loadFactory = true;
@@ -79,6 +72,15 @@ void settingsLoadRAM(int index, const char *value) {
     loadRAM =  false;
   }
   storeLoadRAM(loadRAM);
+}
+
+void settingsROMType(int index, const char *value) {
+  if (strcmp(value, "ROM I") == 0) {
+    ROMType = true;
+  } else {
+    ROMType =  false;
+  }
+  storeROMType(ROMType);
 }
 
 void settingsSaveCurrent(int index, const char *value) {
@@ -115,16 +117,16 @@ int currentIndexUpdateParams() {
   return getUpdateParams() ? 1 : 0;
 }
 
-int currentIndexLoadFromDW() {
-  return getLoadFromDW();
-}
-
 int currentIndexLoadFactory() {
   return getLoadFactory();
 }
 
 int currentIndexLoadRAM() {
   return getLoadRAM();
+}
+
+int currentIndexROMType() {
+  return getROMType() ? 0 : 1;
 }
 
 int currentIndexSaveCurrent() {
@@ -141,9 +143,9 @@ void setUpSettings() {
   settings::append(settings::SettingsOption{"MIDI Out Ch.", {"Off", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "\0"}, settingsMIDIOutCh, currentIndexMIDIOutCh});
   settings::append(settings::SettingsOption{"Encoder", {"Type 1", "Type 2", "\0"}, settingsEncoderDir, currentIndexEncoderDir});
   settings::append(settings::SettingsOption{"MIDI Params", {"Off", "Send Params", "\0"}, settingsUpdateParams, currentIndexUpdateParams});
-  settings::append(settings::SettingsOption{"Load From DW", {"No", "Yes", "\0"}, settingsLoadFromDW, currentIndexLoadFromDW});
   settings::append(settings::SettingsOption{"Load Factory", {"No", "Yes", "\0"}, settingsLoadFactory, currentIndexLoadFactory});
   settings::append(settings::SettingsOption{"Load RAM", {"No", "Yes", "\0"}, settingsLoadRAM, currentIndexLoadRAM});
+  settings::append(settings::SettingsOption{"ROM Type", {"ROM I", "ROM K or L", "\0"}, settingsROMType, currentIndexROMType});
   settings::append(settings::SettingsOption{"Save Current", {"No", "Yes", "\0"}, settingsSaveCurrent, currentIndexSaveCurrent});
   settings::append(settings::SettingsOption{"Save All", {"No", "Yes", "\0"}, settingsSaveAll, currentIndexSaveAll});
 }
