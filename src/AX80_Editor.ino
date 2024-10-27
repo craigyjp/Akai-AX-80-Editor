@@ -56,6 +56,7 @@ boolean cardStatus = false;
 
 //MIDI 5 Pin DIN
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
+MIDI_CREATE_INSTANCE(HardwareSerial, Serial5, MIDI5);
 
 byte ccType = 2;  //(EEPROM)
 
@@ -144,6 +145,12 @@ void setup() {
   MIDI.setHandleSystemExclusive(mySystemExclusiveChunk);
   MIDI.turnThruOn(midi::Thru::Mode::Off);
   Serial.println("MIDI In DIN Listening");
+
+
+  MIDI5.begin();
+  MIDI5.setHandleSystemExclusive(mySystemExclusiveChunk);
+  MIDI5.turnThruOn(midi::Thru::Mode::Off);
+  Serial.println("MIDI5 In DIN Listening");
 
   //Read Encoder Direction from EEPROM
   encCW = getEncoderDir();
@@ -2933,6 +2940,7 @@ void loop() {
   checkEncoder();
   MIDI.read(midiChannel);
   usbMIDI.read(midiChannel);
+  MIDI5.read(midiChannel);
   checkLoadFactory();
   checkLoadRAM();
   SaveCurrent();
