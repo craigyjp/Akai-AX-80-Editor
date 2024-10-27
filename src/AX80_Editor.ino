@@ -86,10 +86,6 @@ int patchNo = 1;               //Current patch no
 int voiceToReturn = -1;        //Initialise
 long earliestTime = millis();  //For voice allocation - initialise to now
 
-byte sysexBuff(50);
-byte data(50);
-byte ramArray[64][50];
-
 void setup() {
   SPI.begin();
   setupDisplay();
@@ -132,7 +128,7 @@ void setup() {
   usbMIDI.setHandleNoteOff(myNoteOff);
   usbMIDI.setHandleNoteOn(myNoteOn);
   usbMIDI.setHandlePitchChange(myPitchBend);
-  usbMIDI.setHandleSystemExclusive(mySystemExclusiveChunk);
+  usbMIDI.setHandleSystemExclusive(handleSysexByte);
   Serial.println("USB Client MIDI Listening");
 
   //MIDI 5 Pin DIN
@@ -142,14 +138,14 @@ void setup() {
   MIDI.setHandleNoteOn(myNoteOn);
   MIDI.setHandleNoteOff(myNoteOff);
   MIDI.setHandlePitchBend(myPitchBend);
-  MIDI.setHandleSystemExclusive(mySystemExclusiveChunk);
+  MIDI.setHandleSystemExclusive(handleSysexByte);
   MIDI.turnThruOn(midi::Thru::Mode::Off);
   Serial.println("MIDI In DIN Listening");
 
 
   MIDI5.begin();
-  MIDI5.setHandleSystemExclusive(mySystemExclusiveChunk);
-  MIDI5.turnThruOn(midi::Thru::Mode::Off);
+  MIDI5.setHandleSystemExclusive(handleSysexByte);
+  //MIDI5.turnThruOn(midi::Thru::Mode::Off);
   Serial.println("MIDI5 In DIN Listening");
 
   //Read Encoder Direction from EEPROM
@@ -167,6 +163,48 @@ void myNoteOn(byte channel, byte note, byte velocity) {
 
 void myNoteOff(byte channel, byte note, byte velocity) {
   MIDI.sendNoteOff(note, velocity, channel);
+}
+
+void handleSysexByte(byte *data, unsigned length) {
+    // Only set up for the first call in a SysEx message
+    if (!receivingSysEx) {
+        receivingSysEx = true;
+    }
+
+    // Store incoming bytes in sysexData array across blocks
+    for (unsigned i = 0; i < length; i++) {
+        ramArray[currentBlock][byteIndex] = data[i];
+        byteIndex++;
+
+        // Move to the next block if the current block is full
+        if (byteIndex >= blockSize) {
+            byteIndex = 0;
+            currentBlock++;
+        }
+    }
+
+    // Check if we’ve received all 64 blocks
+    if (currentBlock >= numBlocks) {
+        sysexComplete = true;
+        receivingSysEx = false; // Clear flag as SysEx message is complete
+        currentBlock = 0;
+    }
+}
+
+void printSysexData() {
+    Serial.println("SysEx Dump Data:");
+    for (int i = 0; i < numBlocks; i++) {
+        Serial.print("Block ");
+        Serial.print(i);
+        Serial.print(": ");
+        for (int j = 0; j < blockSize; j++) {
+            if (ramArray[i][j] < 16) Serial.print("0"); // Pad single-digit hex values
+            Serial.print(ramArray[i][j], HEX);
+            Serial.print(" ");
+        }
+        Serial.println();
+    }
+    Serial.println("End of SysEx Dump");
 }
 
 void mySystemExclusiveChunk(byte *data, unsigned int length) {
@@ -365,15 +403,15 @@ void mySystemExclusiveChunk(byte *data, unsigned int length) {
     }
   }
 
-  // if (received_patch == 63) {
-  //   for (unsigned int i = 0; i < 64; i++) {
-  //     for (unsigned int n = 3; n < 49; n++) {
-  //       Serial.print(ramArray[i][n]);
-  //       Serial.print(", ");
-  //     }
-  //     Serial.println("");
-  //   }
-  // }
+  if (received_patch == 63) {
+    for (unsigned int i = 0; i < 64; i++) {
+      for (unsigned int n = 3; n < 49; n++) {
+        Serial.print(ramArray[i][n]);
+        Serial.print(", ");
+      }
+      Serial.println("");
+    }
+  }
 
 
   //wave_bank = wave_banka + (wave_bankb << 2);
@@ -2933,16 +2971,28 @@ void checkLoadRAM() {
 }
 
 void loop() {
-  octoswitch.update();
-  srp.update();  // update all the LEDs in the buttons
-  checkMux();
-  checkSwitches();
-  checkEncoder();
+
   MIDI.read(midiChannel);
   usbMIDI.read(midiChannel);
   MIDI5.read(midiChannel);
-  checkLoadFactory();
-  checkLoadRAM();
-  SaveCurrent();
-  SaveAll();
+
+  if (!receivingSysEx) {
+    octoswitch.update();
+    srp.update();  // update all the LEDs in the buttons
+    checkMux();
+    checkSwitches();
+    checkEncoder();
+    checkLoadFactory();
+    checkLoadRAM();
+    SaveCurrent();
+    SaveAll();
+  }
+
+    // Print data if the entire SysEx message is complete
+    if (sysexComplete) {
+        printSysexData();
+        sysexComplete = false; // Reset for the next SysEx message
+        currentBlock = 0;      // Reset to start filling from block 0 again
+        byteIndex = 0;         // Reset byte index within the block
+    }
 }
