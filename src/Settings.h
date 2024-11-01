@@ -5,6 +5,7 @@ void settingsMIDIOutCh();
 void settingsEncoderDir();
 void settingsUpdateParams();
 void settingsROMType();
+void settingsSetBank();
 void settingsLoadFactory();
 void settingsLoadRAM();
 void settingsSaveCurrent();
@@ -15,6 +16,7 @@ int currentIndexMIDIOutCh();
 int currentIndexEncoderDir();
 int currentIndexUpdateParams();
 int currentIndexROMType();
+int currentIndexSetBank();
 int currentIndexLoadFactory();
 int currentIndexLoadRAM();
 int currentIndexSaveCurrent();
@@ -54,6 +56,15 @@ void settingsUpdateParams(int index, const char *value) {
     updateParams =  false;
   }
   storeUpdateParams(updateParams ? 1 : 0);
+}
+
+void settingsSetBank(int index, const char *value) {
+  if (strcmp(value, "RAM") == 0) {
+    bankselect = 0;
+  } else {
+    bankselect = atoi(value);
+  }
+  storeSetBank(bankselect);
 }
 
 void settingsLoadFactory(int index, const char *value) {
@@ -117,6 +128,10 @@ int currentIndexUpdateParams() {
   return getUpdateParams() ? 1 : 0;
 }
 
+int currentIndexSetBank() {
+  return getSetBank();
+}
+
 int currentIndexLoadFactory() {
   return getLoadFactory();
 }
@@ -143,9 +158,10 @@ void setUpSettings() {
   settings::append(settings::SettingsOption{"MIDI Out Ch.", {"Off", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "\0"}, settingsMIDIOutCh, currentIndexMIDIOutCh});
   settings::append(settings::SettingsOption{"Encoder", {"Type 1", "Type 2", "\0"}, settingsEncoderDir, currentIndexEncoderDir});
   settings::append(settings::SettingsOption{"MIDI Params", {"Off", "Send Params", "\0"}, settingsUpdateParams, currentIndexUpdateParams});
+  settings::append(settings::SettingsOption{"Set Bank", {"RAM", "1", "2", "3", "4", "\0"}, settingsSetBank, currentIndexSetBank});
   settings::append(settings::SettingsOption{"Load Factory", {"No", "Yes", "\0"}, settingsLoadFactory, currentIndexLoadFactory});
   settings::append(settings::SettingsOption{"Load RAM", {"No", "Yes", "\0"}, settingsLoadRAM, currentIndexLoadRAM});
   settings::append(settings::SettingsOption{"ROM Type", {"ROM I", "ROM K or L", "\0"}, settingsROMType, currentIndexROMType});
   settings::append(settings::SettingsOption{"Save Current", {"No", "Yes", "\0"}, settingsSaveCurrent, currentIndexSaveCurrent});
-  settings::append(settings::SettingsOption{"Save All", {"No", "Yes", "\0"}, settingsSaveAll, currentIndexSaveAll});
+  settings::append(settings::SettingsOption{"Send RAM", {"No", "Yes", "\0"}, settingsSaveAll, currentIndexSaveAll});
 }

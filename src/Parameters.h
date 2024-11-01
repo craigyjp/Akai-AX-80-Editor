@@ -7,12 +7,11 @@ int resolutionFrig = 5;
 
 char buffer[10];
 
-const int numBlocks = 64;
-const int blockSize = 50;
-const int totalBytes = numBlocks * blockSize;
-byte ramArray[numBlocks][blockSize]; // Array to store SysEx data
+const int totalBytes = 3200;
+byte ramArray[64][50]; // Array to store SysEx data
 byte sysexBuff(50);
 byte data(50);
+byte sysexData[50];
 bool sysexComplete = false;
 bool receivingSysEx = false; // Flag to indicate if a SysEx message is in progress
 int currentBlock = 0;

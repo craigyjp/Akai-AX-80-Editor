@@ -10,6 +10,7 @@
 #define EEPROM_SAVE_ALL 7
 #define EEPROM_ROM_TYPE 8
 #define EEPROM_LOAD_RAM 9
+#define EEPROM_BANK_SELECT 10
 
 int getMIDIChannel() {
   byte midiChannel = EEPROM.read(EEPROM_MIDI_CH);
@@ -63,6 +64,16 @@ int getMIDIOutCh() {
 
 void storeMidiOutCh(byte midiOutCh){
   EEPROM.update(EEPROM_MIDI_OUT_CH, midiOutCh);
+}
+
+int getSetBank() {
+  byte sb = EEPROM.read(EEPROM_BANK_SELECT);
+  if (sb < 0 || sb > 4) sb = 0;//If EEPROM has no MIDI channel stored
+  return sb;
+}
+
+void storeSetBank(byte sb){
+  EEPROM.update(EEPROM_BANK_SELECT, sb);
 }
 
 boolean getLoadFactory() {

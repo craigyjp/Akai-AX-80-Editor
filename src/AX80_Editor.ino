@@ -1,5 +1,5 @@
 /*
-  AX80 Editor - Firmware Rev 1.1
+  AX80 Editor - Firmware Rev 1.2
 
   Includes code by:
     Dave Benn - Handling MUXs, a few other bits and original inspiration  https://www.notesandvolts.com/2019/01/teensy-synth-part-10-hardware.html
@@ -154,6 +154,9 @@ void setup() {
   //Read MIDI Out Channel from EEPROM
   midiOutCh = getMIDIOutCh();
 
+  //Read Bank from EEPROM
+  bankselect = getSetBank();
+
   recallPatch(patchNo);  //Load first patch
 }
 
@@ -166,45 +169,229 @@ void myNoteOff(byte channel, byte note, byte velocity) {
 }
 
 void handleSysexByte(byte *data, unsigned length) {
-    // Only set up for the first call in a SysEx message
-    if (!receivingSysEx) {
-        receivingSysEx = true;
-    }
+  // Only set up for the first call in a SysEx message
+  if (!receivingSysEx) {
+    receivingSysEx = true;
+  }
 
-    // Store incoming bytes in sysexData array across blocks
-    for (unsigned i = 0; i < length; i++) {
-        ramArray[currentBlock][byteIndex] = data[i];
-        byteIndex++;
+  // Store incoming bytes in sysexData array across blocks
+  for (unsigned i = 0; i < length; i++) {
+    ramArray[currentBlock][byteIndex] = data[i];
+    byteIndex++;
 
-        // Move to the next block if the current block is full
-        if (byteIndex >= blockSize) {
-            byteIndex = 0;
-            currentBlock++;
-        }
+    // Move to the next block if the current block is full
+    if (byteIndex >= 50) {
+      byteIndex = 0;
+      currentBlock++;
     }
+  }
 
-    // Check if we’ve received all 64 blocks
-    if (currentBlock >= numBlocks) {
-        sysexComplete = true;
-        receivingSysEx = false; // Clear flag as SysEx message is complete
-        currentBlock = 0;
-    }
+  // Check if we’ve received all 64 blocks
+  if (currentBlock >= 64) {
+    sysexComplete = true;
+    receivingSysEx = false;  // Clear flag as SysEx message is complete
+    currentBlock = 0;
+  }
 }
 
 void printSysexData() {
-    Serial.println("SysEx Dump Data:");
-    for (int i = 0; i < numBlocks; i++) {
-        Serial.print("Block ");
-        Serial.print(i);
-        Serial.print(": ");
-        for (int j = 0; j < blockSize; j++) {
-            if (ramArray[i][j] < 16) Serial.print("0"); // Pad single-digit hex values
-            Serial.print(ramArray[i][j], HEX);
-            Serial.print(" ");
-        }
-        Serial.println();
+
+  for (int i = 0; i < 64; i++) {
+    for (int j = 0; j < 50; j++) {
+
+      switch (j) {
+
+        case 3:
+          patchName = "SysexPatch " + String((ramArray[i][j] + 1));
+          break;
+
+        case 4:
+          osc1_octave = ramArray[i][j];
+          break;
+
+        case 5:
+          osc1_wave = ramArray[i][j];
+          break;
+
+        case 6:
+          osc1_pw = ramArray[i][j];
+          break;
+
+        case 7:  // osc1_pwm
+          osc1_pwm = ramArray[i][j];
+          break;
+
+        case 8:
+          osc1_sub = ramArray[i][j];
+          break;
+
+        case 9:  // osc1_level
+          osc1_level = ramArray[i][j];
+          break;
+
+        case 10:  // osc2_freq
+          osc2_freq = ramArray[i][j];
+          break;
+
+        case 11:  // osc2_detune
+          osc2_detune = ramArray[i][j];
+          break;
+
+        case 12:  // osc2_wave
+          osc2_wave = ramArray[i][j];
+          break;
+
+        case 13:  // osc2_xmod
+          osc2_xmod = ramArray[i][j];
+          break;
+
+        case 14:  // osc2_eg_depth
+          osc2_eg_depth = ramArray[i][j];
+          break;
+
+        case 15:  // osc2_eg_select
+          osc2_eg_select = ramArray[i][j];
+          break;
+
+        case 16:  // osc2_level
+          osc2_level = ramArray[i][j];
+          break;
+
+        case 17:  // vcf_cutoff
+          vcf_cutoff = ramArray[i][j];
+          break;
+
+        case 18:  // vcf_res
+          vcf_res = ramArray[i][j];
+          break;
+
+        case 19:  // vcf_eg_depth
+          vcf_eg_depth = ramArray[i][j];
+          break;
+
+        case 20:  // vcf_key_follow
+          vcf_key_follow = ramArray[i][j];
+          break;
+
+        case 21:  // vcf_key_velocity
+          vcf_key_velocity = ramArray[i][j];
+          break;
+
+        case 22:  // vcf_hpf
+          vcf_hpf = ramArray[i][j];
+          break;
+
+        case 23:  // lfo1_depth
+          lfo1_depth = ramArray[i][j];
+          break;
+
+        case 24:  // lfo1_speed
+          lfo1_speed = ramArray[i][j];
+          break;
+
+        case 25:  // lfo1_delay
+          lfo1_delay = ramArray[i][j];
+          break;
+
+        case 26:  // lfo1_wave
+          lfo1_wave = ramArray[i][j];
+          break;
+
+        case 27:  // lfo_select
+          lfo_select = ramArray[i][j];
+          break;
+
+        case 28:
+          eg1_attack = ramArray[i][j];
+          break;
+
+        case 29:
+          eg1_decay = ramArray[i][j];
+          break;
+
+        case 30:
+          eg1_sustain = ramArray[i][j];
+          break;
+
+        case 31:
+          eg1_release = ramArray[i][j];
+          break;
+
+        case 32:
+          eg1_key_follow = ramArray[i][j];
+          break;
+
+        case 33:
+          eg_select = ramArray[i][j];
+          break;
+
+        case 34:
+          vca_key_velocity = ramArray[i][j];
+          break;
+
+        case 35:
+          vca_level = ramArray[i][j];
+          break;
+
+        case 36:
+          lfo2_depth = ramArray[i][j];
+          break;
+
+        case 37:
+          lfo2_speed = ramArray[i][j];
+          break;
+
+        case 38:
+          lfo2_delay = ramArray[i][j];
+          break;
+
+        case 39:
+          lfo2_wave = ramArray[i][j];
+          break;
+
+        case 40:
+          lfo3_depth = ramArray[i][j];
+          break;
+
+        case 41:
+          lfo3_speed = ramArray[i][j];
+          break;
+
+        case 42:
+          lfo3_delay = ramArray[i][j];
+          break;
+
+        case 43:
+          lfo3_wave = ramArray[i][j];
+          break;
+
+        case 44:
+          eg2_attack = ramArray[i][j];
+          break;
+
+        case 45:
+          eg2_decay = ramArray[i][j];
+          break;
+
+        case 46:
+          eg2_sustain = ramArray[i][j];
+          break;
+
+        case 47:
+          eg2_release = ramArray[i][j];
+          break;
+
+        case 48:
+          eg2_key_follow = ramArray[i][j];
+          break;
+      }
     }
-    Serial.println("End of SysEx Dump");
+    // Add a newline to separate rows (optional)
+    sprintf(buffer, "%d", i + 33);
+    savePatch(buffer, getCurrentPatchData());
+    updatePatchname();
+  }
+  recallPatch(33);
 }
 
 void mySystemExclusiveChunk(byte *data, unsigned int length) {
@@ -413,9 +600,6 @@ void mySystemExclusiveChunk(byte *data, unsigned int length) {
     }
   }
 
-
-  //wave_bank = wave_banka + (wave_bankb << 2);
-  //updatewaveBank();
   // recallPatchFlag = false;
 
   // patchName = "Patch ";
@@ -1762,44 +1946,52 @@ void setCurrentPatchData(String data[]) {
 
 void sendToSynthData() {
 
-  // updateosc1_octave();
-  // updateosc1_waveform();
+  updateosc1_octave();
+  updateosc1_wave();
+  updateosc1_PW();
+  updateosc1_PWM();
+  updateosc1_sub();
   updateosc1_level();
-  // updateosc2_octave();
-  // updateosc2_waveform();
+  updateosc2_freq();
+  updateosc2_detune();
+  updateosc2_wave();
+  updateosc2_xmod();
+  updateosc2_eg_depth();
+  updateosc2_eg_select();
   updateosc2_level();
-  // updateosc2_interval();
-  // updateosc2_detune();
-  // updatenoise();
-  // updatevcf_cutoff();
-  // updatevcf_res();
-  // updatevcf_kbdtrack();
-  // updatevcf_polarity();
-  // updatevcf_eg_intensity();
-  // updatechorus();
-  // updatevcf_attack();
-  // updatevcf_decay();
-  // updatevcf_breakpoint();
-  // updatevcf_slope();
-  // updatevcf_sustain();
-  // updatevcf_release();
-  // updatevca_attack();
-  // updatevca_decay();
-  // updatevca_breakpoint();
-  // updatevca_slope();
-  // updatevca_sustain();
-  // updatevca_release();
-  // updatemg_frequency();
-  // updatemg_delay();
-  // updatemg_osc();
-  // updatemg_vcf();
-  // updatebend_osc();
-  // updatebend_vcf();
-  // updateglide_time();
-  // updatePoly1();
-  // updatePoly2();
-  // updateUnison();
-  // updatewaveBank();
+  updatevcf_cutoff();
+  updatevcf_res();
+  updatevcf_eg_depth();
+  updatevcf_key_velocity();
+  updatevcf_key_follow();
+  updatevcf_hpf();
+  updatelfo1_depth();
+  updatelfo1_speed();
+  updatelfo1_delay();
+  updatelfo1_wave();
+  updatelfo2_depth();
+  updatelfo2_speed();
+  updatelfo2_delay();
+  updatelfo2_wave();
+  updatelfo3_depth();
+  updatelfo3_speed();
+  updatelfo3_delay();
+  updatelfo3_wave();
+  updatelfo_select();
+  updateeg1_attack();
+  updateeg1_decay();
+  updateeg1_sustain();
+  updateeg1_release();
+  updateeg1_key_follow();
+  updateeg2_attack();
+  updateeg2_decay();
+  updateeg2_sustain();
+  updateeg2_release();
+  updateeg2_key_follow();
+  updateeg_select();
+  updatevca_key_velocity();
+  updatevca_level();
+  updateosc1_octave();
 }
 
 
@@ -2038,6 +2230,9 @@ void showSettingsPage() {
 
 void midiCCOut(byte cc, byte value) {
   MIDI.sendControlChange(cc, value, midiChannel);  //MIDI DIN is set to Out
+  if (updateParams) {
+    delay(1);
+  }
 }
 
 void checkSwitches() {
@@ -2315,13 +2510,201 @@ void SaveCurrent() {
 
 void SaveAll() {
   if (saveAll) {
+    recallPatchFlag = true;
+    updateParams = false;
+    sysexData[0] = 0xF0;
+    sysexData[1] = 0x47;
+    sysexData[2] = 0x7E;
+    sysexData[49] = 0xF7;
     state = SETTINGS;
     for (int row = 0; row < 64; row++) {
+      recallPatch(row + 33);
+      sysexData[3] = row;
+      for (int i = 4; i < 49; i++) {
+        switch (i) {
+          case 4:
+            sysexData[4] = osc1_octave;
+            break;
+
+          case 5:
+            sysexData[5] = osc1_wave;
+            break;
+
+          case 6:
+            sysexData[6] = osc1_pw;
+            break;
+
+          case 7:
+            sysexData[7] = osc1_pwm;
+            break;
+
+          case 8:
+            sysexData[8] = osc1_sub;
+            break;
+
+          case 9:
+            sysexData[9] = osc1_level;
+            break;
+
+          case 10:
+            sysexData[10] = osc2_freq;
+            break;
+
+          case 11:
+            sysexData[11] = osc2_detune;
+            break;
+
+          case 12:
+            sysexData[12] = osc2_wave;
+            break;
+
+          case 13:
+            sysexData[13] = osc2_xmod;
+            break;
+
+          case 14:
+            sysexData[14] = osc2_eg_depth;
+            break;
+
+          case 15:
+            sysexData[15] = osc2_eg_select;
+            break;
+
+          case 16:
+            sysexData[16] = osc2_level;
+            break;
+
+          case 17:
+            sysexData[17] = vcf_cutoff;
+            break;
+
+          case 18:
+            sysexData[18] = vcf_res;
+            break;
+
+          case 19:
+            sysexData[19] = vcf_eg_depth;
+            break;
+
+          case 20:
+            sysexData[20] = vcf_key_follow;
+            break;
+
+          case 21:
+            sysexData[21] = vcf_key_velocity;
+            break;
+
+          case 22:
+            sysexData[22] = vcf_hpf;
+            break;
+
+          case 23:
+            sysexData[23] = lfo1_depth;
+            break;
+
+          case 24:
+            sysexData[24] = lfo1_speed;
+            break;
+
+          case 25:
+            sysexData[25] = lfo1_delay;
+            break;
+
+          case 26:
+            sysexData[26] = lfo1_wave;
+            break;
+
+          case 27:
+            sysexData[27] = lfo_select;
+            break;
+
+          case 28:
+            sysexData[28] = eg1_attack;
+            break;
+
+          case 29:
+            sysexData[29] = eg1_decay;
+            break;
+
+          case 30:
+            sysexData[30] = eg1_sustain;
+            break;
+
+          case 31:
+            sysexData[31] = eg1_release;
+            break;
+
+          case 32:
+            sysexData[32] = eg1_key_follow;
+            break;
+
+          case 33:
+            sysexData[33] = eg_select;
+            break;
+
+          case 34:
+            sysexData[34] = vca_key_velocity;
+            break;
+
+          case 35:
+            sysexData[35] = vca_level;
+            break;
+
+          case 36:
+            sysexData[36] = lfo2_depth;
+            break;
+
+          case 37:
+            sysexData[37] = lfo2_speed;
+            break;
+
+          case 38:
+            sysexData[38] = lfo2_delay;
+            break;
+
+          case 39:
+            sysexData[39] = lfo2_wave;
+            break;
+
+          case 40:
+            sysexData[40] = lfo3_depth;
+            break;
+
+          case 41:
+            sysexData[41] = lfo3_speed;
+            break;
+
+          case 42:
+            sysexData[42] = lfo3_delay;
+            break;
+
+          case 43:
+            sysexData[43] = lfo3_wave;
+            break;
+
+          case 44:
+            sysexData[44] = eg2_attack;
+            break;
+
+          case 45:
+            sysexData[45] = eg2_decay;
+            break;
+
+          case 46:
+            sysexData[46] = eg2_sustain;
+            break;
+
+          case 47:
+            sysexData[47] = eg2_release;
+            break;
+
+          case 48:
+            sysexData[48] = eg2_key_follow;
+            break;
+        }
+      }
       if (midiOutCh > 0) {
-        MIDI.sendProgramChange(row, midiOutCh);
-        delay(10);
-        //MIDI.sendSysEx(sizeof(saveRequest), saveRequest);
-        delay(10);
+        MIDI.sendSysEx(sizeof(sysexData), sysexData);
       }
     }
     saveAll = false;
@@ -2333,6 +2716,8 @@ void SaveAll() {
     state = PARAMETER;
     recallPatch(patchNo);
   }
+  recallPatchFlag = false;
+  updateParams = true;
 }
 
 void checkLoadFactory() {
@@ -2361,7 +2746,7 @@ void checkLoadFactory() {
 
       // Process the values
       int intValues[46];
-      for (int i = 0; i < 45; i++) {  // Adjust the loop count based on the number of values per row
+      for (int i = 0; i < 46; i++) {  // Adjust the loop count based on the number of values per row
         switch (i) {
 
           case 0:
@@ -2988,11 +3373,11 @@ void loop() {
     SaveAll();
   }
 
-    // Print data if the entire SysEx message is complete
-    if (sysexComplete) {
-        printSysexData();
-        sysexComplete = false; // Reset for the next SysEx message
-        currentBlock = 0;      // Reset to start filling from block 0 again
-        byteIndex = 0;         // Reset byte index within the block
-    }
+  // Print data if the entire SysEx message is complete
+  if (sysexComplete) {
+    printSysexData();
+    sysexComplete = false;  // Reset for the next SysEx message
+    currentBlock = 0;       // Reset to start filling from block 0 again
+    byteIndex = 0;          // Reset byte index within the block
+  }
 }

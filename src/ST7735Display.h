@@ -78,34 +78,52 @@ void renderCurrentPatchPage() {
   tft.setTextSize(1);
   tft.println(currentPgmNum);
   int Patchnumber = currentPgmNum.toInt();
-  if (!updateParams) {
-    if (Patchnumber <= 32) {
-      tft.setFont(&FreeSans12pt7b);
-      tft.setCursor(65, 53);
-      tft.println("P:");
-      tft.setCursor(90, 53);
-      tft.setTextColor(ST7735_RED);
-      tft.setTextSize(1);
-      tft.println(presets[Patchnumber - 1]);
-    }
-    if (Patchnumber > 32 && Patchnumber <= 64 ) {
-      tft.setFont(&FreeSans12pt7b);
-      tft.setCursor(65, 53);
-      tft.println("A:");
-      tft.setCursor(90, 53);
-      tft.setTextColor(ST7735_RED);
-      tft.setTextSize(1);
-      tft.println(presets[Patchnumber - 33]);
-    }
-    if (Patchnumber > 64 && Patchnumber <= 96 ) {
-      tft.setFont(&FreeSans12pt7b);
-      tft.setCursor(65, 53);
-      tft.println("B:");
-      tft.setCursor(90, 53);
-      tft.setTextColor(ST7735_RED);
-      tft.setTextSize(1);
-      tft.println(presets[Patchnumber - 65]);
-    }
+  if (Patchnumber <= 32) {
+    tft.setFont(&FreeSans12pt7b);
+    tft.setCursor(65, 53);
+    tft.println("P:");
+    tft.setCursor(90, 53);
+    tft.setTextColor(ST7735_RED);
+    tft.setTextSize(1);
+    tft.println(presets[Patchnumber - 1]);
+  }
+  if (Patchnumber > 32 && Patchnumber <= 64) {
+    tft.setFont(&FreeSans12pt7b);
+    tft.setCursor(65, 53);
+    tft.println("A:");
+    tft.setCursor(90, 53);
+    tft.setTextColor(ST7735_RED);
+    tft.setTextSize(1);
+    tft.println(presets[Patchnumber - 33]);
+  }
+  if (Patchnumber > 64 && Patchnumber <= 96) {
+    tft.setFont(&FreeSans12pt7b);
+    tft.setCursor(65, 53);
+    tft.println("B:");
+    tft.setCursor(90, 53);
+    tft.setTextColor(ST7735_RED);
+    tft.setTextSize(1);
+    tft.println(presets[Patchnumber - 65]);
+  }
+  if (Patchnumber > 96 && Patchnumber <= 160) {
+    tft.setFont(&FreeSans12pt7b);
+    tft.setCursor(65, 53);
+    tft.println("Bank 1:");
+  }
+  if (Patchnumber > 160 && Patchnumber <= 224) {
+    tft.setFont(&FreeSans12pt7b);
+    tft.setCursor(65, 53);
+    tft.println("Bank 2:");
+  }
+  if (Patchnumber > 224 && Patchnumber <= 288) {
+    tft.setFont(&FreeSans12pt7b);
+    tft.setCursor(65, 53);
+    tft.println("Bank 3:");
+  }
+  if (Patchnumber > 288 && Patchnumber <= 352) {
+    tft.setFont(&FreeSans12pt7b);
+    tft.setCursor(65, 53);
+    tft.println("Bank 4:");
   }
   tft.setTextColor(ST7735_BLACK);
   tft.setFont(&Org_01);
@@ -139,10 +157,6 @@ void renderEnv(float att, float dec, float sus, float rel) {
   tft.drawLine(100 + (att * 60), 74.0, 100 + ((att + dec) * 60), 94 - (sus / 52), ST7735_CYAN);
   tft.drawFastHLine(100 + ((att + dec) * 60), 94 - (sus / 52), 40 - ((att + dec) * 60), ST7735_CYAN);
   tft.drawLine(139, 94 - (sus / 52), 139 + (rel * 60), 94, ST7735_CYAN);
-  //  tft.drawLine(100, 94, 100 + (att * 15), 74, ST7735_CYAN);
-  //  tft.drawLine(100 + (att * 15), 74.0, 100 + ((att + dec) * 15), 94 - (sus / 52), ST7735_CYAN);
-  //  tft.drawFastHLine(100 + ((att + dec) * 15 ), 94 - (sus / 52), 40 - ((att + dec) * 15), ST7735_CYAN);
-  //  tft.drawLine(139, 94 - (sus / 52), 139 + (rel * 15), 94, ST7735_CYAN);
 }
 
 void renderCurrentParameterPage() {
@@ -209,6 +223,17 @@ void renderDeleteMessagePage() {
   tft.println("Renumbering");
   tft.setCursor(10, 90);
   tft.println("SD Card");
+}
+
+void renderSysexMessagePage() {
+  tft.fillScreen(ST7735_BLACK);
+  tft.setFont(&FreeSans12pt7b);
+  tft.setCursor(2, 53);
+  tft.setTextColor(ST7735_YELLOW);
+  tft.setTextSize(1);
+  tft.println("Sysex Dump");
+  tft.setCursor(10, 90);
+  tft.println("Received");
 }
 
 void renderSavePage() {
