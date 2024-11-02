@@ -8,7 +8,7 @@ void settingsROMType();
 void settingsSetBank();
 void settingsLoadFactory();
 void settingsLoadRAM();
-void settingsSaveCurrent();
+//void settingsSaveCurrent();
 void settingsSaveAll();
 
 int currentIndexMIDICh();
@@ -19,7 +19,7 @@ int currentIndexROMType();
 int currentIndexSetBank();
 int currentIndexLoadFactory();
 int currentIndexLoadRAM();
-int currentIndexSaveCurrent();
+//int currentIndexSaveCurrent();
 int currentIndexSaveAll();
 
 void settingsMIDICh(int index, const char *value) {
@@ -161,7 +161,7 @@ void setUpSettings() {
   settings::append(settings::SettingsOption{"Set Bank", {"RAM", "1", "2", "3", "4", "\0"}, settingsSetBank, currentIndexSetBank});
   settings::append(settings::SettingsOption{"Load Factory", {"No", "Yes", "\0"}, settingsLoadFactory, currentIndexLoadFactory});
   settings::append(settings::SettingsOption{"Load RAM", {"No", "Yes", "\0"}, settingsLoadRAM, currentIndexLoadRAM});
-  settings::append(settings::SettingsOption{"ROM Type", {"ROM I", "ROM K or L", "\0"}, settingsROMType, currentIndexROMType});
-  settings::append(settings::SettingsOption{"Save Current", {"No", "Yes", "\0"}, settingsSaveCurrent, currentIndexSaveCurrent});
+  //settings::append(settings::SettingsOption{"Save Current", {"No", "Yes", "\0"}, settingsSaveCurrent, currentIndexSaveCurrent});
   settings::append(settings::SettingsOption{"Send RAM", {"No", "Yes", "\0"}, settingsSaveAll, currentIndexSaveAll});
+  settings::append(settings::SettingsOption{"ROM Type", {"ROM I", "ROM K or L", "\0"}, settingsROMType, currentIndexROMType});
 }

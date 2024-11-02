@@ -387,11 +387,52 @@ void printSysexData() {
       }
     }
     // Add a newline to separate rows (optional)
-    sprintf(buffer, "%d", i + 33);
+    switch (bankselect) {
+      case 0:
+      sprintf(buffer, "%d", i + 33);
+      break;
+
+      case 1:
+      sprintf(buffer, "%d", i + 97);
+      break;
+
+      case 2:
+      sprintf(buffer, "%d", i + 161);
+      break;
+
+      case 3:
+      sprintf(buffer, "%d", i + 225);
+      break;
+
+      case 4:
+      sprintf(buffer, "%d", i + 289);
+      break;
+    }
     savePatch(buffer, getCurrentPatchData());
     updatePatchname();
   }
-  recallPatch(33);
+  loadPatches();
+      switch (bankselect) {
+      case 0:
+      recallPatch(33);
+      break;
+
+      case 1:
+      recallPatch(97);
+      break;
+
+      case 2:
+      recallPatch(161);
+      break;
+
+      case 3:
+      recallPatch(225);
+      break;
+
+      case 4:
+      recallPatch(289);
+      break;
+    }
 }
 
 void mySystemExclusiveChunk(byte *data, unsigned int length) {
@@ -1513,7 +1554,7 @@ void myControlChange(byte channel, byte control, int value) {
 
     case CCosc2_freq:
       osc2_freq = value;
-      osc2_freq = map(osc2_freq, 0, 127, 0, 47);
+      osc2_freq = map(osc2_freq, 0, 127, 0, 36);
       updateosc2_freq();
       break;
 
