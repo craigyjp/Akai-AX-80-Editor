@@ -116,6 +116,7 @@ void setup() {
 
   //Read MIDI Channel from EEPROM
   midiChannel = getMIDIChannel();
+
   Serial.println("MIDI Ch:" + String(midiChannel) + " (0 is Omni On)");
 
   //Read UpdateParams type from EEPROM
@@ -2018,7 +2019,6 @@ void sendToSynthData() {
   updatelfo3_speed();
   updatelfo3_delay();
   updatelfo3_wave();
-  updatelfo_select();
   updateeg1_attack();
   updateeg1_decay();
   updateeg1_sustain();
@@ -2032,7 +2032,7 @@ void sendToSynthData() {
   updateeg_select();
   updatevca_key_velocity();
   updatevca_level();
-  updateosc1_octave();
+  updatelfo_select();
 }
 
 
@@ -2270,7 +2270,7 @@ void showSettingsPage() {
 }
 
 void midiCCOut(byte cc, byte value) {
-  MIDI.sendControlChange(cc, value, midiChannel);  //MIDI DIN is set to Out
+  MIDI.sendControlChange(cc, value, midiOutCh);  //MIDI DIN is set to Out
   if (updateParams) {
     delay(1);
   }
